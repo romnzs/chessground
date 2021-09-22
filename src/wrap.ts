@@ -57,6 +57,8 @@ export function renderWrap(element: HTMLElement, s: HeadlessState): Elements {
     const orientClass = s.orientation === 'black' ? ' black' : '';
     container.appendChild(renderCoords(ranks, 'ranks' + orientClass));
     container.appendChild(renderCoords(files, 'files' + orientClass));
+    // container.appendChild(renderCoords2(ranks, 'ranks' + orientClass, true));
+    // container.appendChild(renderCoords2(files, 'files' + orientClass));
   }
 
   let ghost: HTMLElement | undefined;
@@ -77,11 +79,70 @@ export function renderWrap(element: HTMLElement, s: HeadlessState): Elements {
 }
 
 function renderCoords(elems: readonly string[], className: string): HTMLElement {
-  const el = createEl('coords', className);
+  const el = createEl('coords', className + ' coords-old');
   let f: HTMLElement;
   for (const elem of elems) {
     f = createEl('coord');
     f.textContent = elem;
+    el.appendChild(f);
+  }
+  return el;
+}
+
+function renderCoords2(elems: readonly string[], className: string, isRanks = false): HTMLElement {
+  const el = createEl('coords', className + ' coords-new');
+  for (const elem of elems) {
+    
+    const f = createEl('coord');
+  
+    const coordSvg = setAttributes(createSVG('svg'), {
+      class: 'coord2',
+      viewBox: '0 0 10 10',
+    });
+
+    // const x = isRanks ? '25%' : '25%';
+    // const y = isRanks ? '85%' : '75%';
+    // const x = isRanks ? '75%' : '25%';
+    // const y = isRanks ? '25%' : '75%';
+    const x = isRanks ? '100%' : '0';
+    const y = isRanks ? '0' : '100%';
+
+    // transform: translate(75%, 25%)
+    // transform: translate(25%, 75%)
+    const gSvg = createSVG('g')
+
+
+    const textSvg = setAttributes(createSVG('text'), {
+      class: 'coord-text2',
+      // 'font-size': '75%',
+      // x: '0',
+      // y: '10',
+      // x,
+      // y,
+      x: '50%',
+      y: '50%',
+      'font-size': '60%',
+
+      // 'text-anchor': isRanks ? 'end' : 'start',// START IS UNNECESSARY
+      // 'dominant-baseline': isRanks ? 'hanging' : 'auto',// START IS UNNECESSARY
+
+      'text-anchor': 'middle',
+      'dominant-baseline': 'central'
+
+      
+      // 'dominant-baseline': "middle",
+
+
+    });
+
+
+    textSvg.textContent = elem;
+    // gSvg.appendChild(textSvg)
+    // coordSvg.appendChild(gSvg);
+    coordSvg.appendChild(textSvg);
+    f.appendChild(coordSvg);
+
+    // f.textContent = elem;
     el.appendChild(f);
   }
   return el;
